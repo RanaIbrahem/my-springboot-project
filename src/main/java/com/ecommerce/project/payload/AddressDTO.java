@@ -1,6 +1,10 @@
-package com.ecommerce.project.model;
+package com.ecommerce.project.payload;
 
-import jakarta.persistence.*;
+import com.ecommerce.project.model.User;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,14 +14,10 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
-
-@Entity
-@Table(name = "addresses")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-
-public class Address {
+@NoArgsConstructor
+public class AddressDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
@@ -45,18 +45,4 @@ public class Address {
     @NotBlank
     @Size(min = 6, message = "Pin code must be at least 6 characters")
     private String pinCode;
-
-    @ManyToOne
-    @ToString.Exclude
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    public Address(String street, String buildingName, String city, String state, String country, String pinCode) {
-        this.street = street;
-        this.buildingName = buildingName;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.pinCode = pinCode;
-    }
 }
