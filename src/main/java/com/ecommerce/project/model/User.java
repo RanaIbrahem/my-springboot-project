@@ -58,10 +58,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "user" , cascade = {CascadeType.MERGE , CascadeType.PERSIST},
-    orphanRemoval = true)
-    @ToString.Exclude
-    private Set<Product> products;
+
 
     @Getter
     @Setter
@@ -71,4 +68,16 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "address_id"))
     private List<Address> addresses = new ArrayList<>();
+
+
+
+    @ToString.Exclude
+    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private Cart cart;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true)
+    private Set<Product> products;
 }
