@@ -45,8 +45,10 @@ public class JwtUtils {
     //    }
     //    return null;
     //}
-    public String getJwtFromCookies(HttpServletRequest request) {
+    public String getJwtFromCookies(HttpServletRequest request)
+    {
         Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+        System.out.println("COOKIE: " + cookie.getValue());
         if (cookie != null) {
             System.out.println("COOKIE: " + cookie.getValue());
             return cookie.getValue();
