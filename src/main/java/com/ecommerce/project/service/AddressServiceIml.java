@@ -48,7 +48,7 @@ public class AddressServiceIml implements AddressService {
     }
 
     @Override
-    public AddressDTO getAddressById(Long addressId) {
+    public AddressDTO getAddressesById(Long addressId) {
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(()->new ResourceNotFoundException("Address","addressId", addressId));
         return modelMapper.map(address, AddressDTO.class);
