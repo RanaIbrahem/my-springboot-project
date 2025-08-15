@@ -36,26 +36,26 @@ public class JwtUtils {
         this.jwtCookie =  jwtCookie;
     }
 
-    //public  String getJwtFromHeader(HttpServletRequest request) {
-    //    String bearerToken = request.getHeader(AUTH_HEADER);
-    //    logger.debug("Authorization Header: {}", bearerToken);
-    //    //  logger.debug("Authorization header (masked): {}", mask(bearerToken));
-    //    if (bearerToken != null && bearerToken.trim().toLowerCase().startsWith(BEARER_PREFIX)) {
-    //        return bearerToken.substring(7).trim(); // Remove Bearer prefix
-    //    }
-    //    return null;
-    //}
-    public String getJwtFromCookies(HttpServletRequest request)
-    {
-        Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-        System.out.println("COOKIE: " + cookie.getValue());
-        if (cookie != null) {
-            System.out.println("COOKIE: " + cookie.getValue());
-            return cookie.getValue();
-        } else {
-            return null;
+    public  String getJwtFromHeader(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTH_HEADER);
+        logger.debug("Authorization Header: {}", bearerToken);
+        //  logger.debug("Authorization header (masked): {}", mask(bearerToken));
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7).trim();
         }
+        return null;
     }
+   // public String getJwtFromCookies(HttpServletRequest request)
+   // {
+    //    Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+    //    System.out.println("COOKIE: " + cookie.getValue());
+    //    if (cookie != null) {
+    //        System.out.println("COOKIE: " + cookie.getValue());
+    //        return cookie.getValue();
+    //    } else {
+    //        return null;
+    //    }
+    //}
 
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
         String jwt = generateTokenFromUsername(userPrincipal.getUsername());

@@ -49,23 +49,55 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication;
-        authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+    public ResponseEntity<UserInfoResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        // مصادقة المستخدم
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    //    String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
+        // توليد التوكن
+        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails.getUsername());
+
+        // استخراج الأدوار
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-        UserInfoResponse response = new UserInfoResponse(userDetails.getId(),
-                userDetails.getUsername(), roles);
+                .toList();
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                jwtCookie.toString()).body(response);
+        // إرجاع البيانات مع التوكن
+        UserInfoResponse response = new UserInfoResponse(
+                userDetails.getId(),
+                userDetails.getUsername(),
+                roles,
+                jwtToken
+        );
+
+        return ResponseEntity.ok(response);
     }
+
+ //   @PostMapping("/signin")
+ //   public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+ //       Authentication authentication;
+ //       authentication = authenticationManager
+    //                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+ //         SecurityContextHolder.getContext().setAuthentication(authentication);
+ //         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    //    String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+ //       ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+    //       List<String> roles = userDetails.getAuthorities().stream()
+    //               .map(item -> item.getAuthority())
+ //               .collect(Collectors.toList());
+    //       UserInfoResponse response = new UserInfoResponse(userDetails.getId(),
+    //              userDetails.getUsername(), roles);
+    //
+    //    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
+    //           jwtCookie.toString()).body(response);
+    //    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest  signUpRequest) {
